@@ -1,0 +1,74 @@
+SELECT * FROM ogrenci, notlar, dersler 
+WHERE ogrenci.ogrno=notlar.ogrno AND dersler.ders_kod=notlar.ders_kod;
+
+SELECT ogrenci.ogrno,adi,soyadi,dersler.ders_kod,ders_adi,vize,final,
+vize*0.4+final*0.6 as ort 
+FROM ogrenci, notlar, dersler 
+
+WHERE ogrenci.ogrno=notlar.ogrno AND dersler.ders_kod=notlar.ders_kod;
+SELECT bol_no,count(maas) as adet,avg(maas) as ort,SUM(maas) as toplam 
+FROM personel GROUP BY bol_no;
+select * from notlar where ((vize*0.4)+(final*0.6))>70;
+
+select adi,soyadi,bolkod from ogrenci where bolkod=536 order by adi asc
+select count(ders_adi) from dersler where ders_adi='Matematik'
+
+/*dersler tablosundan dönem değeri 1 olan dersleri
+listeleyen sql cümlesi nedir?*/
+select ders_adi,dönem from dersler where dönem=1
+
+/*dersler tablosundan dönem değeri 1 olan ve 4 nolu hocanın girmediği
+dersleri listeleyen sql cümlesi nedir? (d_ID=4)*/
+select ders_adi,dönem from dersler where dönem=1 and not (h_ID=4)
+
+/*dersler tablosundan dönem değeri 1 olan ve 4 ve 3 nolu hocanın girmediği
+dersleri listeleyen sql cümlesi nedir? (d_ID=4)*/
+select ders_adi from dersler where dönem=1 and not (h_ID=3 or h_ID=4)
+select ders_adi from dersler where dönem=1 and (h_ID in (3,4,5,6,7,8))
+
+/* dersler tablosunda ders_kod=5 olan kaydın adını matematik 2 yapan
+sql kodunu yazınız*/
+update dersler set ders_adi='Matematik 2' where ders_kod=5
+
+/*Bolkod=536 olan öğrencilerin ogrno,vize,final
+bilgilerini veren sorguyu yazınız*/
+select * from notlar
+select * from ogrenci
+select * from dersler
+select ogrno,vize,final from notlar 
+where ogrno in (select ogrno from ogrenci where bolkod=536)
+
+/*vize değeri 50 den büyük olan öğrenci no ve isimlerini
+listeleyen sql kodunu yazınız*/
+select ogrno, adi, soyadi from ogrenci where ogrno 
+in (select ogrno from notlar where vize>50)
+
+/*7536545 nolu öğrencinin teorisi 2 olan derslerden 
+aldığı notları listeleyen sql sorguyu yazınız */
+SELECT ogrno,ders_kod,vize, final FROM notlar WHERE ogrno= 7536545 
+AND ders_kod IN( SELECT ders_kod FROM dersler WHERE teori=2)
+
+/*bolkod u 1 veya 536 olan öğrencilerin teorisi 2 veya 3 olan derslerden 
+aldığı notları listeleyen sql sorguyu yazınız */
+SELECT ogrno,ders_kod,vize, final FROM notlar WHERE 
+ogrno in (select ogrno from ogrenci where bolkod in (1,536)) 
+AND ders_kod IN( SELECT ders_kod FROM dersler WHERE teori in (2,3))
+
+/*notlar tablosunda vize değeri 50 ve 50 den büyük olan öğrencilerin 
+öğrenci no ve ad ve soyad bölüm kod bilgilerini listeleyen sql kodunu yazınız*/
+select ogrno, adi, soyadi, bolkod from ogrenci 
+where ogrno in (select ogrno from notlar where vize>=50)
+select ogrno, adi, soyadi, bolkod from ogrenci 
+where ogrno in (select ogrno from notlar where vize>=50 and final>=50)
+
+/*Ders kodu 104 olan dersi alan öğrencilerin adlarını listeleyen 
+sorguyu yazınız.*/
+SELECT adi FROM ogrenci, notlar 
+WHERE ogrenci.ogrno = notlar.ogrno AND ders_kod=104
+SELECT adi FROM ogrenci 
+where ogrno in (select ogrno from notlar where ders_kod=104) 
+
+/*Ders adları ve ortalamalarını listeleyen sorguyu yazınız.*/
+SELECT ders_adi, AVG(vize*0.4+final*0.6) as ort FROM dersler, notlar 
+WHERE dersler.ders_kod=notlar.ders_kod GROUP BY ders_adi
+
